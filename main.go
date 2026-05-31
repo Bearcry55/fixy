@@ -32,7 +32,7 @@ func main() {
 			fmt.Printf("%s🔤 Lang:%s   %s\n", cyan, reset, langTag)
 		}
 
-		fileMatches = scanFile(fileName, errorMessage)
+		fileMatches = scanFile(fileName, errorMessage, langTag)
 		printFileMatches(fileName, fileMatches)
 	} else {
 		errorMessage = os.Args[1]
