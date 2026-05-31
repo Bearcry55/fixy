@@ -15,6 +15,7 @@ type FileMatch struct {
 	Context    []string
 	FuncName   string
 	Reason     string
+	Relevant   bool // true = directly related to the error
 }
 
 // RiskPattern describes a dangerous code pattern the scanner detects

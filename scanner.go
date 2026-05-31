@@ -570,12 +570,15 @@ func scanFile(fileName, errorMsg, lang string) []FileMatch {
 	// Pick pattern set for this language
 	patterns, ok := langPatterns[lang]
 	if !ok {
-		// Unknown language — use Go patterns as fallback
 		patterns = goPatterns
 	}
 
-	// Filter to only relevant patterns for this error
-	activePatterns := relevantPatterns(errorMsg, patterns)
+	// Relevant patterns = directly related to the error message
+	relevant := relevantPatterns(errorMsg, patterns)
+	relevantSet := map[string]bool{}
+	for _, p := range relevant {
+		relevantSet[p.Name] = true
+	}
 
 	var matches []FileMatch
 	currentFunc := ""
@@ -586,7 +589,8 @@ func scanFile(fileName, errorMsg, lang string) []FileMatch {
 		}
 		lower := strings.ToLower(line)
 
-		for _, pattern := range activePatterns {
+		// Run ALL language patterns — not just relevant ones
+		for _, pattern := range patterns {
 			if pattern.Check(line, lower) {
 				ctx := []string{}
 				for j := clampMin(0, i-2); j <= clampMax(len(lines)-1, i+2); j++ {
@@ -600,6 +604,7 @@ func scanFile(fileName, errorMsg, lang string) []FileMatch {
 					Context:    ctx,
 					FuncName:   currentFunc,
 					Reason:     pattern.Name,
+					Relevant:   relevantSet[pattern.Name],
 				})
 				break
 			}
