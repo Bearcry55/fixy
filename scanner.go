@@ -40,15 +40,16 @@ var riskPatterns = []RiskPattern{
 		},
 	},
 	{
-		Name: "nil dereference risk",
-		Check: func(line, lower string) bool {
-			trimmed := strings.TrimSpace(lower)
-			if strings.HasPrefix(trimmed, "//") {
-				return false
-			}
-			return (strings.Contains(line, ".") && strings.Contains(line, "(")) ||
-				strings.Contains(line, "*")
-		},
+	Name: "nil dereference risk",
+Check: func(line, lower string) bool {
+    trimmed := strings.TrimSpace(lower)
+    if strings.HasPrefix(trimmed, "//") ||
+        strings.HasPrefix(trimmed, "func ") {  
+        return false
+    }
+    return (strings.Contains(line, ".") && strings.Contains(line, "(")) ||
+        strings.Contains(line, "*")
+},
 	},
 	{
 		Name: "unchecked error (blank identifier)",
